@@ -1,7 +1,5 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.storage;
 
-import ru.yandex.practicum.storage.MemoryStorage;
-import ru.yandex.practicum.storage.Storage;
 import ru.yandex.practicum.user.Details;
 import ru.yandex.practicum.user.User;
 
