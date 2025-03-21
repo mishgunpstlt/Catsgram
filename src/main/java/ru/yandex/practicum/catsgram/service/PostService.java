@@ -6,9 +6,8 @@ import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 // Указываем, что класс PostService - является бином и его
 // нужно добавить в контекст приложения
@@ -22,15 +21,24 @@ public class PostService {
         this.userService = userService;
     }
 
-    public Collection<Post> findAll() {
-        return posts.values();
+    public Collection<Post> findAll(long from, long size, String sort) {
+        if (size <= 0) {
+            throw  new IllegalArgumentException("Размер выборки size должен быть больше нуля");
+        }
+        return posts.values().stream()
+                .skip(from)
+                .limit(size)
+                .sorted(sort.equalsIgnoreCase("asc")
+                        ? Comparator.comparing(Post::getPostDate)
+                        : Comparator.comparing(Post::getPostDate).reversed())
+                .toList();
     }
 
     public Post create(Post post) {
         if (post.getDescription() == null || post.getDescription().isBlank()) {
             throw new ConditionsNotMetException("Описание не может быть пустым");
         }
-        if (userService.findUserById(post.getAuthorId()).isPresent()) {
+        if (userService.findUserById(post.getAuthorId()) != null) {
             post.setId(getNextId());
             post.setPostDate(Instant.now());
             posts.put(post.getId(), post);
@@ -53,6 +61,14 @@ public class PostService {
             return oldPost;
         }
         throw new NotFoundException("Пост с id = " + newPost.getId() + " не найден");
+    }
+
+    public Post findPostById(Long id) {
+       if (posts.get(id) != null) {
+           return posts.get(id);
+       } else {
+           throw new NotFoundException("Пост с id = " + id + " не найден");
+       }
     }
 
     private long getNextId() {
