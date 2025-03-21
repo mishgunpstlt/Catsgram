@@ -3,6 +3,8 @@ package ru.yandex.practicum.catsgram.service;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
+import ru.yandex.practicum.catsgram.exception.NotFoundException;
+import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.time.Instant;
@@ -58,9 +60,14 @@ public class UserService {
         return newUser;
     }
 
-    public Optional<User> findUserById(Long id) {
-        return Optional.ofNullable(users.get(id));
+    public User findUserById(Long id) {
+        if (users.get(id) != null) {
+            return users.get(id);
+        } else {
+            return null;
+        }
     }
+
 
     // вспомогательный метод для генерации идентификатора нового поста
     private Long getNextId() {
