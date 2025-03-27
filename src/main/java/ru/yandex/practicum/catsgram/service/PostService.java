@@ -6,8 +6,10 @@ import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
 
 import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 // Указываем, что класс PostService - является бином и его
 // нужно добавить в контекст приложения
@@ -23,7 +25,7 @@ public class PostService {
 
     public Collection<Post> findAll(long from, long size, String sort) {
         if (size <= 0) {
-            throw  new IllegalArgumentException("Размер выборки size должен быть больше нуля");
+            throw new IllegalArgumentException("Размер выборки size должен быть больше нуля");
         }
         return posts.values().stream()
                 .skip(from)
@@ -64,11 +66,11 @@ public class PostService {
     }
 
     public Post findPostById(Long id) {
-       if (posts.get(id) != null) {
-           return posts.get(id);
-       } else {
-           throw new NotFoundException("Пост с id = " + id + " не найден");
-       }
+        if (posts.get(id) != null) {
+            return posts.get(id);
+        } else {
+            throw new NotFoundException("Пост с id = " + id + " не найден");
+        }
     }
 
     private long getNextId() {
