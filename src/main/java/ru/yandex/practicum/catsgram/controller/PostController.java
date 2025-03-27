@@ -2,10 +2,12 @@ package ru.yandex.practicum.catsgram.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.catsgram.exception.ParameterNotValidException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -17,7 +19,19 @@ public class PostController {
     }
 
     @GetMapping
-    public Collection<Post> findAll(@RequestParam(defaultValue = "0") long from, @RequestParam(defaultValue = "10") long size, @RequestParam(defaultValue = "desc") String sort) {
+    public Collection<Post> findAll(@RequestParam(defaultValue = "0") long from,
+                                    @RequestParam(defaultValue = "10") long size,
+                                    @RequestParam(defaultValue = "desc") String sort) {
+
+        if (!List.of("desc", "asc").contains(sort)) {
+            throw new ParameterNotValidException("sort", "параметр sort должен содержать корректное значение");
+        }
+        if (size <= 0) {
+            throw new ParameterNotValidException("size", "параметр size должен быть больше нуля");
+        }
+        if (from < 0) {
+            throw new ParameterNotValidException("from", "параметр from не может быть меньше нуля");
+        }
         return postService.findAll(from, size, sort);
     }
 

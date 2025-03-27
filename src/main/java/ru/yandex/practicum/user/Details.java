@@ -1,6 +1,8 @@
 package ru.yandex.practicum.user;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 
 import java.util.Date;
 
